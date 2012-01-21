@@ -59,11 +59,22 @@ static apr_status_t ap_proxy404_output_filter(ap_filter_t *f, apr_bucket_brigade
   proxy404_config *cfg = ap_get_module_config(r->server->module_config, &proxy404_module);
   apr_bucket *e;
 
+#ifdef DEBUG
+  ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, "Starting to filter: response code is %d", rv);
+#endif
+
   // Only run this code for stuff that is enabled - we can stop processing everything else
   if (cfg->enabled[r->status] != 1) {
+#ifdef DEBUG
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, "Am not interested");
+#endif
     ap_remove_output_filter(f);
     return ap_pass_brigade(f->next, in);
   }
+
+#ifdef DEBUG
+  ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, "Am very excited to malform this request");
+#endif
 
   // Otherwise it's some kind of error
   // Drop everything as we are going to replace it with an ErrorDocument
@@ -85,10 +96,7 @@ static apr_status_t ap_proxy404_output_filter(ap_filter_t *f, apr_bucket_brigade
   apr_table_unset(r->err_headers_out, "Content-Encoding");
 
   ap_remove_output_filter(f);
-
-  // There are mixed indicators about whether this is needed:
-  // ap_die(status, r);
-
+  ap_die(rv, r);
   return rv;
 }
 
