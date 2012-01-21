@@ -48,7 +48,7 @@ static apr_status_t ap_proxy404_output_filter(ap_filter_t *f, apr_bucket_brigade
   apr_bucket *e;
     
   // If this is a 200 or a 404 then allow it to continue on its merry way
-  if (r->status == HTTP_OK && r->status == HTTP_NOT_FOUND) {
+  if (r->status == HTTP_OK || r->status == HTTP_NOT_FOUND) {
     ap_remove_output_filter(f);
     return ap_pass_brigade(f->next, in);
   }
