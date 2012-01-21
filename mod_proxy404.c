@@ -56,10 +56,11 @@ static void *proxy404_create_config(apr_pool_t *p, server_rec *s) {
 static apr_status_t ap_proxy404_output_filter(ap_filter_t *f, apr_bucket_brigade *in) {
   request_rec *r = f->r;
   apr_status_t rv = r->status;
+  proxy404_config *cfg = ap_get_module_config(r->server->module_config, &proxy404_module);
   apr_bucket *e;
 
-  // If this is a 200 or a 404 then allow it to continue on its merry way
-  if (r->status == HTTP_OK || r->status == HTTP_NOT_FOUND) {
+  // Only run this code for stuff that is enabled - we can stop processing everything else
+  if (cfg->enabled[r->status] != 1) {
     ap_remove_output_filter(f);
     return ap_pass_brigade(f->next, in);
   }
