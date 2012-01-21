@@ -41,22 +41,22 @@
 #include "util_filter.h"
 #include "http_protocol.h"
 
-module AP_MODULE_DECLARE_DATA proxy404_module;
+module AP_MODULE_DECLARE_DATA pec_module;
 
 typedef struct {
   int enabled[600];
-} proxy404_config;
+} pec_config;
 
-static void *proxy404_create_config(apr_pool_t *p, server_rec *s) {
-  proxy404_config *newcfg;
-  newcfg = (proxy404_config *) apr_pcalloc(p, sizeof(proxy404_config));
+static void *pec_create_config(apr_pool_t *p, server_rec *s) {
+  pec_config *newcfg;
+  newcfg = (pec_config *) apr_pcalloc(p, sizeof(pec_config));
   return (void *) newcfg;
 }
 
-static apr_status_t ap_proxy404_output_filter(ap_filter_t *f, apr_bucket_brigade *in) {
+static apr_status_t ap_pec_output_filter(ap_filter_t *f, apr_bucket_brigade *in) {
   request_rec *r = f->r;
   apr_status_t rv = r->status;
-  proxy404_config *cfg = ap_get_module_config(r->server->module_config, &proxy404_module);
+  pec_config *cfg = ap_get_module_config(r->server->module_config, &pec_module);
   apr_bucket *e;
 
 #ifdef DEBUG
@@ -100,7 +100,7 @@ static apr_status_t ap_proxy404_output_filter(ap_filter_t *f, apr_bucket_brigade
   return rv;
 }
 
-static void ap_proxy404_insert_output_filter(request_rec *r) {
+static void ap_pec_insert_output_filter(request_rec *r) {
   ap_add_output_filter(
     "PROXY404",
     NULL,
@@ -108,26 +108,26 @@ static void ap_proxy404_insert_output_filter(request_rec *r) {
     r->connection);
 }
 
-static void proxy404_register_hooks(apr_pool_t *p) {
+static void pec_register_hooks(apr_pool_t *p) {
   ap_register_output_filter(
     "PROXY404",
-    ap_proxy404_output_filter,
+    ap_pec_output_filter,
     NULL,
     AP_FTYPE_CONTENT_SET
     );
 
   ap_hook_insert_filter(
-    ap_proxy404_insert_output_filter,
+    ap_pec_insert_output_filter,
     NULL,
     NULL,
     APR_HOOK_LAST + 1
     );
 }
 
-static const char *proxy404_set_capture(cmd_parms *parms, void *mconfig, const char *code, const char *val)
+static const char *pec_set_capture(cmd_parms *parms, void *mconfig, const char *code, const char *val)
 {
-  proxy404_config *s_cfg = ap_get_module_config(
-    parms->server->module_config, &proxy404_module);
+  pec_config *s_cfg = ap_get_module_config(
+    parms->server->module_config, &pec_module);
 
   int icode = atoi(code);
   if (icode < 100 || icode > 600)
@@ -143,10 +143,10 @@ static const char *proxy404_set_capture(cmd_parms *parms, void *mconfig, const c
   return NULL;
 }
 
-static const command_rec proxy404_cmds[] = {
+static const command_rec pec_cmds[] = {
   AP_INIT_TAKE2(
     "ProxyErrorCapture",
-    proxy404_set_capture,
+    pec_set_capture,
     NULL,
     RSRC_CONF,
     "ProxyErrorCapture <STATUS_CODE> <On|Off>."
@@ -154,12 +154,12 @@ static const command_rec proxy404_cmds[] = {
   {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA proxy404_module = {
+module AP_MODULE_DECLARE_DATA pec_module = {
   STANDARD20_MODULE_STUFF,
   NULL,
   NULL,
-  proxy404_create_config,
+  pec_create_config,
   NULL,
-  proxy404_cmds,
-  proxy404_register_hooks
+  pec_cmds,
+  pec_register_hooks
 };
