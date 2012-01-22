@@ -1,0 +1,43 @@
+#!/usr/bin/make -f
+# debian rules file for mod_proxyerrorcapture
+
+build:
+	dh_testdir
+	apxs2 -c apache2.0/mod_proxyerrorcapture.c
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f mod_proxyerrorcapture.o
+	cd apache2.0 && rm -rf .libs *.o *.lo *.la *.slo
+	dh_clean 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	dh_install
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installexamples
+	dh_installchangelogs CHANGES
+	dh_link
+	dh_strip
+	dh_compress -Xexample
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# Build architecture-independent files here.
+binary-indep: build install
+
+binary: binary-arch binary-indep
+.PHONY: build clean binary-indep binary-arch binary install configure

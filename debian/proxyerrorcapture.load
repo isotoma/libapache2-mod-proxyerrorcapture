@@ -1,0 +1,2 @@
+LoadModule proxyerrorcapture_module    /usr/lib/apache2/modules/mod_proxyerrorcapture.so
+

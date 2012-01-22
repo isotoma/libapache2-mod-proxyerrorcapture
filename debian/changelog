@@ -1,0 +1,6 @@
+libapache-mod-proxyerrorcapture (0.0.0) unstable; urgency=low
+
+  * Initial packaging
+
+ -- John Carr <john.carr@isotoma.com>  Sat, 21 Jan 2012 23:47:58 +0000
+
