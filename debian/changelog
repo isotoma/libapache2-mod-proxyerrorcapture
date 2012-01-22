@@ -1,4 +1,4 @@
-libapache-mod-proxyerrorcapture (0.0.0) unstable; urgency=low
+libapache2-mod-proxyerrorcapture (0.0.0) unstable; urgency=low
 
   * Initial packaging
 

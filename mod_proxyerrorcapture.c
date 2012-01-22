@@ -41,7 +41,7 @@
 #include "util_filter.h"
 #include "http_protocol.h"
 
-module AP_MODULE_DECLARE_DATA pec_module;
+module AP_MODULE_DECLARE_DATA proxyerrorcapture_module;
 
 typedef struct {
   int enabled[600];
@@ -56,7 +56,7 @@ static void *pec_create_config(apr_pool_t *p, server_rec *s) {
 static apr_status_t ap_pec_output_filter(ap_filter_t *f, apr_bucket_brigade *in) {
   request_rec *r = f->r;
   apr_status_t rv = r->status;
-  pec_config *cfg = ap_get_module_config(r->server->module_config, &pec_module);
+  pec_config *cfg = ap_get_module_config(r->server->module_config, &proxyerrorcapture_module);
   apr_bucket *e;
 
 #ifdef DEBUG
@@ -127,7 +127,7 @@ static void pec_register_hooks(apr_pool_t *p) {
 static const char *pec_set_capture(cmd_parms *parms, void *mconfig, const char *code, const char *val)
 {
   pec_config *s_cfg = ap_get_module_config(
-    parms->server->module_config, &pec_module);
+    parms->server->module_config, &proxyerrorcapture_module);
 
   int icode = atoi(code);
   if (icode < 100 || icode > 600)
@@ -154,7 +154,7 @@ static const command_rec pec_cmds[] = {
   {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA pec_module = {
+module AP_MODULE_DECLARE_DATA proxyerrorcapture_module = {
   STANDARD20_MODULE_STUFF,
   NULL,
   NULL,

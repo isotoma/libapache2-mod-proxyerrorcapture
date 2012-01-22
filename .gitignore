@@ -1,6 +1,8 @@
 .libs/
+debian/files
 debian/libapache2-mod-proxyerrorcapture.debhelper.log
 debian/libapache2-mod-proxyerrorcapture/
+debian/libapache2-mod-proxyerrorcapture.substvars
 mod_proxyerrorcapture.la
 mod_proxyerrorcapture.lo
 mod_proxyerrorcapture.slo

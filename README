@@ -1,0 +1,51 @@
+mod_proxyerrorcapture
+=====================
+
+This module is an alternative to ``ProxyErrorOverride On`` which either
+overrides all errors or not and most of the time that is not what you want.
+
+Install from source
+-------------------
+
+Fairly standard make::
+
+    make proxyerrorcapture
+    sudo make install
+
+
+Install from deb
+----------------
+
+Download from github and install with dpkg::
+
+    wget https://github.com/downloads/isotoma/libapache2-mod-proxyerrorcapture/libapache2-mod-proxyerrorcapture_0.0.0_amd64.deb
+    sudo dpkg -i libapache2-mod-proxyerrorcapture_0.0.0_amd64.deb
+
+
+Configuring
+-----------
+
+Enable it::
+
+    sudo a2enmod proxyerrorcapture
+
+
+And turn it on in your vhosts::
+
+    ProxyErrorCapture 503 On
+    ProxyErrorCapture 500 On
+    ProxyErrorCapture 404 Off
+
+
+Now 500 and 503 errors will be served emergency pages from Apache, but 404's
+will still come from the proxied backend. Note that the default is ``off``.
+
+Any ErrorDocument stanzas will be respected. He claims, not having actually
+tested that bit. 
+
+TODO
+----
+
+ * Is this per vhost? It should be really...
+ * Needs a beating / load test.
+

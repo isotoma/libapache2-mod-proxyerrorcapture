@@ -3,13 +3,13 @@
 
 build:
 	dh_testdir
-	apxs2 -c apache2.0/mod_proxyerrorcapture.c
+	apxs2 -c mod_proxyerrorcapture.c
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f mod_proxyerrorcapture.o
-	cd apache2.0 && rm -rf .libs *.o *.lo *.la *.slo
+	rm -rf .libs *.o *.lo *.la *.slo
 	dh_clean 
 
 install: build
